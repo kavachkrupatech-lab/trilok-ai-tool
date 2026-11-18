@@ -15,7 +15,7 @@ api_key = st.sidebar.text_input("अपनी Google Gemini API Key यहाँ
 st.sidebar.markdown("---")
 st.sidebar.info("💡 यह टूल पूरी तरह से फ्री है।")
 
-user_topic = st.text_area("आप किस विषय पर कहानी लिखना चाहते हैं?", placeholder="जैसे: शेर और चालाक बंदर...")
+user_topic = st.text_area("आप किस विषय पर कहानी लिखना चाहते हैं?", placeholder="जैसे: राजा रानी और उसका चालक प्रधानमंत्री...")
 language_option = st.selectbox("आवाज की भाषा चुनें (Language):", ["Hindi", "English"])
 
 if st.button("🚀 कहानी और ऑडियो जनरेट करें"):
@@ -27,7 +27,7 @@ if st.button("🚀 कहानी और ऑडियो जनरेट कर
         try:
             genai.configure(api_key=api_key)
             
-            # यहाँ हमने ऐसा तरीका लगाया है जो उपलब्ध मॉडल को अपने आप चुन लेगा
+            # यह तरीका खुद-ब-खुद आपके अकाउंट का सबसे सही और चालू मॉडल ढूंढ लेगा, नाम बदलने की कभी जरूरत नहीं पड़ेगी
             model = None
             for m in genai.list_models():
                 if 'generateContent' in m.supported_generation_methods:
