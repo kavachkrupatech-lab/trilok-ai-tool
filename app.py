@@ -38,7 +38,7 @@ if st.button("🚀 कहानी और ऑडियो जनरेट कर
         try:
             # 1. Gemini AI को कॉन्फ़िगर करना और सही मॉडल चुनना
             genai.configure(api_key=api_key)
-            model = genai.GenerativeModel('gemini-1.5-pro')
+            model = genai.GenerativeModel('gemini-pro')
             
             with st.spinner("⏳ AI आपकी कहानी लिख रहा है और आवाज़ तैयार हो रहा है... कृपया प्रतीक्षा करें"):
                 prompt_instruction = f"एक बहुत ही दिलचस्प, आकर्षक और अच्छी कहानी या स्क्रिप्ट इस विषय पर लिखें: {user_topic}"
