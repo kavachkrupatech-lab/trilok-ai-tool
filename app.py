@@ -1,7 +1,6 @@
 import streamlit as st
 import google.generativeai as genai
 from gtts import gTTS
-from moviepy.editor import TextClip, AudioFileClip, ColorClip
 import os
 
 # पेज की सेटिंग और डिजाइन
@@ -12,9 +11,9 @@ st.set_page_config(
 )
 
 # ऐप का टाइटल (आपका ब्रांड नाम)
-st.title("🎬 Trilok AI - ऑल-इन-वन स्टोरी, ऑडियो और वीडियो क्रिएटर")
+st.title("🎬 Trilok AI - स्टोरी और ऑडियो क्रिएटर")
 st.markdown("---")
-st.write("यहाँ अपना विषय लिखें। यह टूल आपके लिए कहानी लिखेगा, उसका वॉयसओवर (ऑडियो) बनाएगा और साथ में वीडियो भी तैयार कर देगा—**बिल्कुल मुफ्त!**")
+st.write("यहाँ अपना विषय लिखें। यह टूल आपके लिए बेहतरीन कहानी लिखेगा और उसका वॉयसओवर (ऑडियो) तैयार कर देगा—**बिल्कुल मुफ्त!**")
 
 # साइडबार में API Key डालने की जगह
 st.sidebar.header("🔑 सेटिंग्स")
@@ -24,13 +23,13 @@ st.sidebar.markdown("---")
 st.sidebar.info("💡 **टिप:** यह टूल पूरी तरह से फ्री है। Google AI Studio से फ्री API Key लेकर यहाँ डालनी है।")
 
 # यूजर से विषय (Prompt) लेना
-user_topic = st.text_area("आप किस विषय पर कहानी या वीडियो बनाना चाहते हैं?", placeholder="जैसे: एकता में ताकत है, इस पर एक छोटी कहानी लिखो...")
+user_topic = st.text_area("आप किस विषय पर कहानी लिखना चाहते हैं?", placeholder="जैसे: एकता में ताकत है, इस पर एक छोटी कहानी लिखो...")
 
 # भाषा चुनने का विकल्प
-language_option = st.selectbox("भाषा चुनें (Language):", ["Hindi", "English"])
+language_option = st.selectbox("आवाज की भाषा चुनें (Language):", ["Hindi", "English"])
 
 # जनरेट करने का बटन
-if st.button("🚀 कहानी, ऑडियो और वीडियो जनरेट करें"):
+if st.button("🚀 कहानी और ऑडियो जनरेट करें"):
     if not api_key:
         st.warning("⚠️ कृपया पहले बाएं साइडबार (Sidebar) में अपनी Google Gemini API Key दर्ज करें।")
     elif not user_topic:
@@ -41,33 +40,19 @@ if st.button("🚀 कहानी, ऑडियो और वीडियो �
             genai.configure(api_key=api_key)
             model = genai.GenerativeModel('gemini-1.5-flash')
             
-            with st.spinner("⏳ AI आपकी कहानी लिख रहा है, ऑडियो और वीडियो तैयार हो रहा है... कृपया प्रतीक्षा करें"):
-                prompt_instruction = f"एक छोटी, आकर्षक और अच्छी कहानी या स्क्रिप्ट इस विषय पर लिखें: {user_topic}"
+            with st.spinner("⏳ AI आपकी कहानी लिख रहा है और आवाज़ तैयार हो रहा है... कृपया प्रतीक्षा करें"):
+                prompt_instruction = f"एक बहुत ही दिलचस्प, आकर्षक और अच्छी कहानी या स्क्रिप्ट इस विषय पर लिखें: {user_topic}"
                 response = model.generate_content(prompt_instruction)
                 story_output = response.text
                 
                 # 2. कहानी को ऑडियो (Voiceover) में बदलना
                 lang_code = 'hi' if language_option == "Hindi" else 'en'
-                tts = gTTS(text=story_output[:500], lang=lang_code, slow=False) # छोटी कहानी के लिए
+                tts = gTTS(text=story_output, lang=lang_code, slow=False)
                 audio_file = "trilok_audio.mp3"
                 tts.save(audio_file)
-                
-                # 3. ऑडियो और बैकग्राउंड से वीडियो बनाना (MoviePy)
-                audio_clip = AudioFileClip(audio_file)
-                duration = audio_clip.duration
-                
-                # नीले रंग का बैकग्राउंड वीडियो बनाना
-                bg_clip = ColorClip(size=(720, 1280), color=(20, 30, 60), duration=duration)
-                
-                # वीडियो के साथ ऑडियो जोड़ना
-                video_clip = bg_clip.set_audio(audio_clip)
-                video_file = "trilok_video.mp4"
-                
-                # वीडियो को सेव करना (बिना किसी एरर के)
-                video_clip.write_videofile(video_file, fps=24, codec='libx264', audio_codec='aac', logger=None)
             
             # सफलता का संदेश
-            st.success("🎉 आपकी कहानी, ऑडियो और वीडियो सफलतापूर्वक तैयार हो गए हैं!")
+            st.success("🎉 आपकी कहानी और ऑडियो सफलतापूर्वक तैयार हो गए हैं!")
             
             # रिजल्ट दिखाना (कहानी)
             st.subheader("📖 AI द्वारा रचित कहानी:")
@@ -77,20 +62,13 @@ if st.button("🚀 कहानी, ऑडियो और वीडियो �
             st.subheader("🎧 ऑडियो सुनें:")
             st.audio(audio_file, format='audio/mp3')
             
-            # वीडियो प्लेयर
-            st.subheader("🎬 वीडियो देखें:")
-            st.video(video_file)
-            
             # डाउनलोड करने के विकल्प
-            col1, col2, col3 = st.columns(3)
+            col1, col2 = st.columns(2)
             with col1:
-                st.download_button("📥 टेक्स्ट डाउनलोड", data=story_output, file_name="story.txt", mime="text/plain")
+                st.download_button("📥 टेक्स्ट डाउनलोड (TXT)", data=story_output, file_name="story.txt", mime="text/plain")
             with col2:
                 with open(audio_file, "rb") as f:
-                    st.download_button("📥 ऑडियो (MP3)", data=f, file_name="audio.mp3", mime="audio/mp3")
-            with col3:
-                with open(video_file, "rb") as f:
-                    st.download_button("📥 वीडियो (MP4)", data=f, file_name="video.mp4", mime="video/mp4")
+                    st.download_button("📥 ऑडियो डाउनलोड (MP3)", data=f, file_name="audio.mp3", mime="audio/mp3")
             
         except Exception as e:
             st.error(f"❌ कुछ गड़बड़ी हुई है: {e}")
