@@ -1,7 +1,7 @@
 import streamlit as st
 import google.generativeai as genai
 from gtts import gTTS
-from moviepy.editor import TextClip, AudioFileClip, ColorClip, CompositeVideoClip
+from moviepy.editor import AudioFileClip, ColorClip
 import os
 
 # पेज की सेटिंग
@@ -46,10 +46,8 @@ if st.button("🚀 कहानी, ऑडियो और वीडियो �
                 audio_clip = AudioFileClip(audio_file)
                 duration = audio_clip.duration
                 
-                # सुंदर नीले रंग का बैकग्राउंड और टेक्स्ट क्लिप
+                # सुंदर बैकग्राउंड और ऑडियो जोड़कर वीडियो तैयार करना
                 bg_clip = ColorClip(size=(720, 1280), color=(20, 30, 60), duration=duration)
-                
-                # वीडियो जनरेशन
                 video_file = "trilok_video.mp4"
                 video = bg_clip.set_audio(audio_clip)
                 video.write_videofile(video_file, fps=24, codec='libx264', audio_codec='aac', logger=None)
@@ -64,10 +62,11 @@ if st.button("🚀 कहानी, ऑडियो और वीडियो �
             st.subheader("🎧 ऑडियो सुनें:")
             st.audio(audio_file, format='audio/mp3')
             
-            # वीडियो प्लेयर और डाउनलोड बटन
+            # वीडियो प्लेयर
             st.subheader("🎬 वीडियो देखें और डाउनलोड करें:")
             st.video(video_file)
             
+            # डाउनलोड बटन (टेक्स्ट, ऑडियो, वीडियो तीनों)
             col1, col2, col3 = st.columns(3)
             with col1:
                 st.download_button("📥 टेक्स्ट (TXT)", data=story_output, file_name="story.txt", mime="text/plain")
