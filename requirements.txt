@@ -1,5 +1,3 @@
 streamlit
 google-generativeai
 gtts
-moviepy==1.0.3
-
