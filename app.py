@@ -23,7 +23,7 @@ st.sidebar.markdown("---")
 st.sidebar.info("💡 **टिप:** यह टूल पूरी तरह से फ्री है। Google AI Studio से फ्री API Key लेकर यहाँ डालनी है।")
 
 # यूजर से विषय (Prompt) लेना
-user_topic = st.text_area("आप किस विषय पर कहानी लिखना चाहते हैं?", placeholder="जैसे: एकता में ताकत है, इस पर एक छोटी कहानी लिखो...")
+user_topic = st.text_area("आप किस विषय पर कहानी लिखना चाहते हैं?", placeholder="जैसे: शेर और चालाक बंदर...")
 
 # भाषा चुनने का विकल्प
 language_option = st.selectbox("आवाज की भाषा चुनें (Language):", ["Hindi", "English"])
@@ -36,9 +36,9 @@ if st.button("🚀 कहानी और ऑडियो जनरेट कर
         st.warning("⚠️ कृपया कहानी का विषय लिखें।")
     else:
         try:
-            # 1. Gemini AI को कॉन्फ़िगर करना और कहानी लिखना
+            # 1. Gemini AI को कॉन्फ़िगर करना और सही मॉडल चुनना
             genai.configure(api_key=api_key)
-            model = genai.GenerativeModel('gemini-1.5-flash')
+            model = genai.GenerativeModel('gemini-1.5-pro')
             
             with st.spinner("⏳ AI आपकी कहानी लिख रहा है और आवाज़ तैयार हो रहा है... कृपया प्रतीक्षा करें"):
                 prompt_instruction = f"एक बहुत ही दिलचस्प, आकर्षक और अच्छी कहानी या स्क्रिप्ट इस विषय पर लिखें: {user_topic}"
