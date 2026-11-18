@@ -1,7 +1,7 @@
 import streamlit as st
 import google.generativeai as genai
 from gtts import gTTS
-os = __import__('os')
+import os
 
 st.set_page_config(page_title="Trilok AI Creator Studio", page_icon="🎬", layout="centered")
 
@@ -27,9 +27,16 @@ if st.button("🚀 कहानी और ऑडियो जनरेट कर
         try:
             genai.configure(api_key=api_key)
             
-            # यहाँ हमने ऐसा तरीका लगाया है जो कभी फेल नहीं होगा
-            model = genai.GenerativeModel('gemini-pro')
-            
+            # यहाँ हमने ऐसा तरीका लगाया है जो उपलब्ध मॉडल को अपने आप चुन लेगा
+            model = None
+            for m in genai.list_models():
+                if 'generateContent' in m.supported_generation_methods:
+                    if 'flash' in m.name or 'pro' in m.name:
+                        model = genai.GenerativeModel(m.name)
+                        break
+            if model is None:
+                model = genai.GenerativeModel('gemini-pro')
+
             with st.spinner("⏳ AI आपकी कहानी लिख रहा है और आवाज़ तैयार हो रही है..."):
                 response = model.generate_content(f"एक बहुत ही दिलचस्प और अच्छी कहानी इस विषय पर लिखें: {user_topic}")
                 story_output = response.text
